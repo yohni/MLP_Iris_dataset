@@ -93,26 +93,25 @@ dataframe.head(150)
 dataset = dataframe.head(150).values.tolist()
 
 for i in dataset:
-	if(i[4]=='Iris-setosa'):
-		i.append(0)
-		i.append(0)
-	elif(i[4]=='Iris-versicolor'):
-		i.append(1)
-		i.append(0)
-	else:
-		i.append(0)
-		i.append(1)
+  if(i[4]=='Iris-setosa'):
+    i.append(0)
+    i.append(0)
+  elif(i[4]=='Iris-versicolor'):
+    i.append(1)
+    i.append(0)
+  else:
+    i.append(0)
+    i.append(1)
     
     
-# np.random.shuffle(dataset)
+np.random.shuffle(dataset)
 
-# data_train = dataset[:120]
-# data_val = dataset[120:]
+data_train = dataset[:120]
+data_val = dataset[120:]
 
-data_train = dataset[:40]+dataset[50:90]+dataset[100:140]
-data_val = dataset[40:50]+dataset[90:100]+dataset[140:150]
-
-n_epoch = 400
+# data_train = dataset[:40]+dataset[50:90]+dataset[100:140]
+# data_val = dataset[40:50]+dataset[90:100]+dataset[140:150]
+n_epoch = 300
 network = init_net(4,4,2)
 l_rate = 0.1
 
@@ -140,7 +139,7 @@ for epoch in range(n_epoch):
   
   sum_error = 0
   sum_acc = 0
-  for row in data_train:
+  for row in data_val:
     outputs = forward_propagate(network,row)
     expected = [0 for ex in range(2)]
     expected[0] = row[-2]
@@ -148,12 +147,10 @@ for epoch in range(n_epoch):
     sum_error += sum([(expected[i]-outputs[i])**2 for i in range(len(expected))])
     if(expected == predict(outputs)):
       sum_acc += 1
-    backward_propagate_error(network,expected)
-    update_weights(network, row, l_rate)
     
   
-  sum_error_ep_val.append(sum_error/120)  
-  sum_acc_ep_val.append(sum_acc/120)
+  sum_error_ep_val.append(sum_error/30) 
+  sum_acc_ep_val.append(sum_acc/30)
   
   
   
@@ -162,7 +159,6 @@ plt.plot(sum_error_ep_train,'r-', label='train')
 plt.plot(sum_error_ep_val,'b-', label='validation')
 plt.xlabel('epoch')
 plt.ylabel('error')
-plt.ylim(0,0.6)
 plt.legend(loc='upper right')
 
 plt.figure(2)
@@ -177,8 +173,8 @@ plt.plot(sum_error_ep_train,'r-', label='train')
 plt.plot(sum_error_ep_val,'b-', label='validation')
 plt.xlabel('epoch')
 plt.ylabel('error')
-plt.ylim(0,0.1)
-plt.xlim(100,200)
+plt.xlim(50,150)
+plt.ylim(0.3,0.55)
 plt.legend(loc='upper right')
 
 plt.figure(4)
@@ -186,8 +182,8 @@ plt.plot(sum_acc_ep_train,'r-', label='train')
 plt.plot(sum_acc_ep_val,'b-', label='validation')
 plt.xlabel('epoch')
 plt.ylabel('accuracy')
-plt.ylim(0.9,1.1)
-plt.xlim(100,300)
+plt.xlim(50,200)
+plt.ylim(0.4,0.8)
 plt.legend(loc='upper right')
 
 plt.show()
